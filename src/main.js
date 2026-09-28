@@ -1,6 +1,32 @@
 const toast = document.querySelector('.toast');
 const toastTitle = document.querySelector('[data-toast-title]');
+const themeToggle = document.querySelector('[data-theme-toggle]');
+const themeLabel = document.querySelector('[data-theme-label]');
 let toastTimer;
+
+function applyTheme(theme) {
+  const isLight = theme === 'light';
+  const nextThemeLabel = isLight ? 'Ativar tema escuro' : 'Ativar tema claro';
+
+  document.documentElement.dataset.theme = theme;
+  themeToggle?.setAttribute('aria-pressed', String(isLight));
+  themeToggle?.setAttribute('aria-label', nextThemeLabel);
+  themeToggle?.setAttribute('title', nextThemeLabel);
+  if (themeLabel) themeLabel.textContent = nextThemeLabel;
+}
+
+applyTheme(document.documentElement.dataset.theme || 'dark');
+
+themeToggle?.addEventListener('click', () => {
+  const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+  applyTheme(nextTheme);
+
+  try {
+    localStorage.setItem('rx-theme', nextTheme);
+  } catch {
+    // A troca continua funcionando mesmo se o navegador bloquear o armazenamento local.
+  }
+});
 
 document.querySelectorAll('[data-module]').forEach((button) => {
   button.addEventListener('click', () => {
